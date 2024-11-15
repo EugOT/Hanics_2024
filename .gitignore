@@ -15,7 +15,7 @@ analysis/*html
 analysis/*png
 analysis/figure
 analysis/site_libs
-cellaranger_*
+cellranger_BSF_1105_Mouse_Cortex_SCGN_P02_1
 cellbender/*.h5
 cellbender/*.h5ad
 data/SCP1290

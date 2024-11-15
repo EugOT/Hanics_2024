@@ -1,0 +1,182 @@
+---
+title: "Export data"
+author: "Evgenii O. Tretiakov"
+format:
+  html:
+    toc: true
+    df-print: paged
+    code-fold: true
+    fig-width: 14
+    fig-height: 12
+    fig-format: retina
+    fig-responsive: true
+    fig-dpi: 600
+execute:
+  keep-md: false
+  echo: true
+  error: false
+  message: false
+  warning: false
+  debug: false
+knitr:
+  opts_chunk:
+    autodep: true
+    fig.align: center
+    fig.retina: 2
+    fig.width: 14
+    fig.height: 12
+---
+
+```{r setup, include = FALSE}
+DOCNAME <- "export"
+NOW <- Sys.time()
+
+# Time chunks during knitting
+knitr::knit_hooks$set(timeit = function(before) {
+  if (before) {
+    print(paste("Start:", Sys.time()))
+    NOW <<- Sys.time()
+  } else {
+    print(paste("Stop:", Sys.time()))
+    print(Sys.time() - NOW)
+  }
+})
+
+knitr::knit_hooks$set(debug = function(before, options, envir) {
+  if (!before) {
+    message(
+      paste(names(envir), as.list(envir),
+        sep = " = ", collapse = "\n"
+      )
+    )
+  }
+})
+
+knitr::opts_chunk$set(
+  cache          = FALSE,
+  dev            = c("png", "pdf"),
+  timeit         = TRUE
+)
+```
+
+## Load data and setup parameters
+
+```{r libraries, cache=FALSE}
+# Load tidyverse infrastructure packages
+suppressPackageStartupMessages({
+  library(future)
+  library(here)
+  library(tidyverse)
+  library(magrittr)
+  library(stringr)
+  library(skimr)
+  library(RColorBrewer)
+})
+
+
+# Load packages for scRNA-seq analysis and visualisation
+suppressPackageStartupMessages({
+  library(ggplot2)
+  library(cowplot)
+  library(patchwork)
+  library(ggstatsplot)
+  library(anndata)
+  library(sceasy)
+})
+
+sc <- import("scanpy", convert = FALSE)
+```
+
+### Set paths
+
+```{r paths}
+src_dir <- here("code")
+data_dir <- here("data")
+output_dir <- here("output")
+plots_dir <- here(output_dir, "figures")
+tables_dir <- here(output_dir, "tables")
+```
+
+### Set fixed variables
+
+```{r params-computation, cache = FALSE}
+# set seed
+reseed <- 42
+set.seed(seed = reseed)
+
+# Parameters for parallel execution
+n_cores <- 32
+plan("multisession", workers = n_cores)
+options(
+  future.globals.maxSize = 100000 * 1024^2,
+  future.rng.onMisuse = "ignore"
+)
+plan()
+
+
+# ggplot2 theme
+theme_set(ggmin::theme_powerpoint())
+```
+
+```{r params}
+bioproject <- "PRJNA602867"
+cb_fpr <- 0.001
+```
+
+## Load selected astrocytes data from Lutomska LM et al (2022)
+
+```{r load-data, cache = FALSE}
+anndata <- sc$read(here(
+  data_dir,
+  sprintf("%s-whole_dataset-fpr_%s-clusters.h5ad", bioproject, cb_fpr)
+))
+```
+
+### Convert adata object to R AnnDataR6 object.
+```{r convert-to-seurat}
+adata <- py_to_r(anndata)
+# X_norm <- sc$pp$normalize_total(adata, target_sum = 1e+04, inplace = FALSE)["X"]
+sc$pp$normalize_total(adata, target_sum = 1e+04, inplace = TRUE)
+sc$pp$log1p(adata)
+class(adata)
+class(adata$X)
+adata
+```
+
+```{r export-expression}
+exp_mtx_fname <- here(
+  data_dir,
+  sprintf("%s-whole_dataset-%s-expr-mtx.csv", bioproject, cb_fpr)
+)
+exp_tsv_fname <- here(
+  data_dir,
+  sprintf("%s-whole_dataset-%s-expr-mtx.tsv", bioproject, cb_fpr)
+)
+X <- as.data.frame(as.matrix(adata$X))
+expr_data <- as.data.frame(t(X))
+colnames(expr_data) <- rownames(adata$X)
+rownames(expr_data) <- colnames(adata$X)
+readr::write_csv(X, file = exp_mtx_fname)
+readr::write_tsv(expr_data, file = exp_tsv_fname)
+```
+
+```{r select-features}
+X <- X[, colSums(X) > 0]
+```
+
+```{r metadata}
+cdata <- as.data.frame(adata$obs)
+```
+
+```{r merge-data}
+df <- cbind(cdata, X)
+glimpse(df)
+```
+
+## Session information
+
+```{r session-info, cache = FALSE}
+sI <- sessioninfo::session_info()
+sI$loadedOnly <- NULL
+print(sI, locale = FALSE)
+```
