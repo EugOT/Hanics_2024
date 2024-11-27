@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# analysis.R
+# code/analysis/analysis.R
 
 preprocess_raw_srt <- function(project, combined_srt) {
   DefaultAssay(combined_srt) <- "RNA"
@@ -1188,8 +1188,8 @@ integrate_srt <- function(project, combined_srt, unintegrated_srt) {
   DefaultAssay(combined_srt) <- "RNA"
   combined_srt[["RNA"]]@layers <-
     combined_srt[["RNA"]]@layers[combined_srt[["RNA"]]@layers |>
-                                   names() |>
-                                   str_detect(pattern = "Gene Expression")]
+      names() |>
+      str_detect(pattern = "Gene Expression")]
   metadata <- combined_srt@meta.data
   rownames(metadata) <- colnames(combined_srt)
 
@@ -1233,8 +1233,8 @@ integrate_srt <- function(project, combined_srt, unintegrated_srt) {
   combined_srt <- NormalizeData(combined_srt)
   combined_srt <-
     FindVariableFeatures(combined_srt,
-                         selection.method = "vst",
-                         nfeatures = 5000
+      selection.method = "vst",
+      nfeatures = 5000
     )
 
   invisible(gc())
@@ -1243,17 +1243,21 @@ integrate_srt <- function(project, combined_srt, unintegrated_srt) {
   all_genes <- rownames(combined_srt)
   hvg <- VariableFeatures(combined_srt)
   hvg <-
-    hvg[str_detect(pattern = var_regex,
-                   string = hvg,
-                   negate = TRUE)]
+    hvg[str_detect(
+      pattern = var_regex,
+      string = hvg,
+      negate = TRUE
+    )]
   agg_genes <-
     JoinLayers(combined_srt[["RNA"]])$counts |> rowSums()
   all_genes <-
     all_genes[agg_genes > 0.001 * ncol(combined_srt)]
   all_genes <-
-    all_genes[str_detect(pattern = var_regex,
-                         string = all_genes,
-                         negate = TRUE)]
+    all_genes[str_detect(
+      pattern = var_regex,
+      string = all_genes,
+      negate = TRUE
+    )]
 
   keep_genes <-
     c(gene_int, hvg) %>%

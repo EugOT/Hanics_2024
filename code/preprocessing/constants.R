@@ -1,24 +1,24 @@
 #!/usr/bin/env Rscript
-# constants.R
+# code/preprocessing/constants.R
 
-Sys.setenv(RETICULATE_PYTHON = "/opt/python/3.8.8/bin/python")
+# Sys.setenv(RETICULATE_PYTHON = "/opt/python/3.8.8/bin/python")
 # Load tidyverse infrastructure packages
-suppressPackageStartupMessages({
-  library(here)
-  library(knitr)
-  library(RColorBrewer)
-  library(viridis)
-  library(tidyverse)
-  library(magrittr)
-  library(stringr)
-  library(skimr)
-  library(future)
-  library(furrr)
-  library(zeallot)
-  library(kableExtra)
-  library(reticulate)
-})
-reticulate::use_condaenv("/opt/python/3.8.8/bin/python")
+# suppressPackageStartupMessages({
+#   library(here)
+#   library(knitr)
+#   library(RColorBrewer)
+#   library(viridis)
+#   library(tidyverse)
+#   library(magrittr)
+#   library(stringr)
+#   library(skimr)
+#   library(future)
+#   library(furrr)
+#   library(zeallot)
+#   library(kableExtra)
+#   library(reticulate)
+# })
+# reticulate::use_condaenv("/opt/python/3.8.8/bin/python")
 
 # Set paths
 src_dir <- here("code")
@@ -31,7 +31,7 @@ plots_dir <- here(output_dir, "figures/")
 tables_dir <- here(output_dir, "tables/")
 
 # parallelisation
-n_cores <- 16
+n_cores <- 64
 
 # set seed
 reseed <- 42

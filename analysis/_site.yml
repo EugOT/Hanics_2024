@@ -5,6 +5,8 @@ navbar:
   left:
   - text: Home
     href: index.html
+  - text: Analysis
+    href: 01A-eda.html
   - text: About
     href: about.html
   - text: License

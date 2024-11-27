@@ -1,3 +1,6 @@
+#!/usr/bin/env Rscript
+# code/preprocessing/functions.R
+
 #' Get download markdown link
 #'
 #' Convert an output file name and location to a URL that can be used to

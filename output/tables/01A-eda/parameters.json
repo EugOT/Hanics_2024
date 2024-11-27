@@ -1,0 +1,58 @@
+[
+  {
+    "Parameter": ["high_cutoff_umis"],
+    "Value": [10000],
+    "Description": ["Maximum threshold for total counts"]
+  },
+  {
+    "Parameter": ["low_cutoff_gene"],
+    "Value": [200],
+    "Description": ["Minimum threshold for total features"]
+  },
+  {
+    "Parameter": ["high_cutoff_gene"],
+    "Value": [2500],
+    "Description": ["Maximum threshold for total features"]
+  },
+  {
+    "Parameter": ["high_cutoff_pc_mt"],
+    "Value": [20],
+    "Description": ["Maximum threshold for percentage counts mitochondrial"]
+  },
+  {
+    "Parameter": ["high_cutoff_pc_ribo"],
+    "Value": [2],
+    "Description": ["Maximum threshold for percentage counts ribosomal"]
+  },
+  {
+    "Parameter": ["high_cutoff_pc_hb"],
+    "Value": [0.1],
+    "Description": ["Maximum threshold for percentage counts hemoglobin"]
+  },
+  {
+    "Parameter": ["high_cutoff_complexity"],
+    "Value": [0.9],
+    "Description": ["Maximum threshold for cells complexity"]
+  },
+  {
+    "Parameter": ["n_cells"],
+    "Value": [7542],
+    "Description": ["Number of cells in the filtered dataset"]
+  },
+  {
+    "Parameter": ["n_genes"],
+    "Value": [19519],
+    "Description": ["Number of genes in the filtered dataset"]
+  },
+  {
+    "Parameter": ["median_genes"],
+    "Value": [608],
+    "Description": ["Median number of expressed genes per cell in the filtered dataset"]
+  },
+  {
+    "Parameter": ["median_counts"],
+    "Value": [996],
+    "Description": ["Median number of counts per cell in the filtered dataset"]
+  },
+  ["n_cells-BSF_1105_Mouse_Cortex_SCGN_P02_1", "0", "Number of cells in the filtered BSF_1105_Mouse_Cortex_SCGN_P02_1 dataset"]
+]

@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# data.R
+# code/preprocessing/data.R
 
 source(here(src_dir, "genes.R"))
 
