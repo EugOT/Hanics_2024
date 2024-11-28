@@ -2880,6 +2880,8 @@ top10 <-
 DoHeatmap(combined_srt, features = top10$gene) + NoLegend()
 ```
 
+# Transfer tdTomato cells onto reference 
+
 ```{r}
 #| label = "prepare-reference"
 # Run PCA
@@ -3114,12 +3116,235 @@ DimPlot_scCustom(
   label.size = 5
 ) + ggtitle("tdTomato Status in Query Cells")
 
-Idents(subset(combined_srt, subset = Scgn_tdTomato == "Scgn_Cre")) |> table()
+subset(combined_srt, subset = Scgn_tdTomato == "Scgn_Cre")$predicted.New_cellType |> table()
 
 subset(combined_srt, subset = Scgn_tdTomato == "Scgn_Cre")$k_tree |> table()
 ```
 
-The most represented cluster's markers are Mki67, Top2a, Dlx1, and Dlx6
+```{r}
+#| label = "plot-stacked-vln-markers-query-by-Scgn",
+#| fig.height = 38,
+#| fig.width = 20
+sample_colors <- c("dodgerblue", "firebrick1")
+names(sample_colors) <- c("WT", "Scgn_Cre")
+Idents(combined_srt) <- "predicted.New_cellType"
+migneuro_cre <- FindMarkers(subset(
+    combined_srt,
+    idents = c(
+      "Migrating neurons")),
+    ident.1 = "Scgn_Cre",
+    ident.2 = "WT",
+    group.by = "Scgn_tdTomato",
+    assay = "SCT",
+    verbose = FALSE,
+    random.seed = reseed,
+    only.pos = TRUE,
+    min.pct = 0.2,
+    base = 10,
+    logfc.threshold = 0.2,
+    densify = TRUE,
+    test.use = "LR"
+)
+
+astro_cre <- FindMarkers(subset(
+    combined_srt,
+    idents = c(
+      "Astrocytes")),
+    ident.1 = "Scgn_Cre",
+    ident.2 = "WT",
+    group.by = "Scgn_tdTomato",
+    assay = "SCT",
+    verbose = FALSE,
+    random.seed = reseed,
+    only.pos = TRUE,
+    min.pct = 0.2,
+    base = 10,
+    logfc.threshold = 0.2,
+    densify = TRUE,
+    test.use = "LR"
+)
+
+oligo_cre <- FindMarkers(subset(
+    combined_srt,
+    idents = c(
+      "Oligodendrocytes")),
+    ident.1 = "Scgn_Cre",
+    ident.2 = "WT",
+    group.by = "Scgn_tdTomato",
+    assay = "SCT",
+    verbose = FALSE,
+    random.seed = reseed,
+    only.pos = TRUE,
+    min.pct = 0.2,
+    base = 10,
+    logfc.threshold = 0.2,
+    densify = TRUE,
+    test.use = "LR"
+)
+
+cthpn_cre <- FindMarkers(subset(
+    combined_srt,
+    idents = c(
+      "CThPN")),
+    ident.1 = "Scgn_Cre",
+    ident.2 = "WT",
+    group.by = "Scgn_tdTomato",
+    assay = "SCT",
+    verbose = FALSE,
+    random.seed = reseed,
+    only.pos = TRUE,
+    min.pct = 0.2,
+    base = 10,
+    logfc.threshold = 0.2,
+    densify = TRUE,
+    test.use = "LR"
+)
+
+# Create Plots
+Stacked_VlnPlot(
+  seurat_object = subset(
+    combined_srt,
+    idents = c(
+      "Astrocytes",
+      "Oligodendrocytes",
+      "CThPN",
+      "Migrating neurons")), 
+  features = c(
+    markers_logreg %>%
+      dplyr::filter(cluster %in% c(
+        subset(
+          combined_srt,
+          subset = Scgn_tdTomato == "Scgn_Cre")$k_tree |> 
+          droplevels() |> 
+          table() %>% .[. > 1] |> names()
+        )) |> 
+      group_by(cluster) %>%
+      top_n(n = 2, wt = avg_log10FC) |> 
+      pull(gene),
+    migneuro_cre |> 
+      dplyr::filter(pct.1 > 0.5, p_val < 0.001) |>
+      top_n(n = 3, wt = avg_log10FC) |>
+      rownames(),
+    astro_cre |> 
+      dplyr::filter(pct.1 > 0.5, p_val < 0.001) |>
+      top_n(n = 3, wt = avg_log10FC) |>
+      rownames(),
+    oligo_cre |> 
+      dplyr::filter(pct.1 > 0.5, p_val < 0.001) |>
+      top_n(n = 3, wt = avg_log10FC) |>
+      rownames(),
+    cthpn_cre |> 
+      dplyr::filter(pct.1 > 0.5, p_val < 0.001) |>
+      top_n(n = 3, wt = avg_log10FC) |>
+      rownames(), 
+    "tdTomato"
+  ),
+  x_lab_rotate = TRUE,
+  colors_use = sample_colors,
+  group.by = "predicted.New_cellType",
+  split.by = "Scgn_tdTomato")
+```
+
+```{r}
+#| label = "plot-markers-query-by-Scgn",
+#| fig.height = 8,
+#| fig.width = 7
+
+neurotrans <- Feature_Present(
+  subset(
+    combined_srt,
+    idents = c(
+      "Astrocytes",
+      "Oligodendrocytes",
+      "CThPN",
+      "Migrating neurons")),
+  features = neurotrans)
+
+# Create Plots
+Clustered_DotPlot(
+  subset(
+    combined_srt,
+    idents = c(
+      "Astrocytes",
+      "Oligodendrocytes",
+      "CThPN",
+      "Migrating neurons")),
+  features = c(
+    markers_logreg %>%
+      dplyr::filter(cluster %in% c(
+        subset(
+          combined_srt,
+          subset = Scgn_tdTomato == "Scgn_Cre")$k_tree |> 
+          droplevels() |> 
+          table() %>% .[. > 1] |> names()
+        )) |> 
+      group_by(cluster) %>%
+      top_n(n = 3, wt = avg_log10FC) |> 
+      pull(gene),
+    migneuro_cre |> 
+      dplyr::filter(pct.1 > 0.5, p_val < 0.001) |>
+      top_n(n = 3, wt = avg_log10FC) |>
+      rownames(),
+    astro_cre |> 
+      dplyr::filter(pct.1 > 0.5, p_val < 0.001) |>
+      top_n(n = 3, wt = avg_log10FC) |>
+      rownames(),
+    oligo_cre |> 
+      dplyr::filter(pct.1 > 0.5, p_val < 0.001) |>
+      top_n(n = 3, wt = avg_log10FC) |>
+      rownames(),
+    cthpn_cre |> 
+      dplyr::filter(pct.1 > 0.5, p_val < 0.001) |>
+      top_n(n = 3, wt = avg_log10FC) |>
+      rownames(), 
+    "tdTomato",
+    "Gad1", "Slc32a1", "Slc17a6", "Glul"
+    ),
+  group.by = "predicted.New_cellType",
+  split.by = "Scgn_tdTomato",
+  plot_padding = TRUE
+  )
+```
+
+
+```{r}
+#| label = "plot-cycling-markers-query-by-Scgn",
+#| fig.height = 146,
+#| fig.width = 20
+# Plot the projected UMAP, coloring by Scgn expression
+FeaturePlot_scCustom(
+  seurat_object = combined_srt,
+  features = c(
+    migneuro_cre |> 
+      dplyr::filter(pct.1 > 0.5, p_val < 0.001) |>
+      top_n(n = 3, wt = avg_log10FC) |>
+      rownames(),
+    astro_cre |> 
+      dplyr::filter(pct.1 > 0.5, p_val < 0.0001) |>
+      top_n(n = 3, wt = avg_log10FC) |>
+      rownames(),
+    oligo_cre |> 
+      dplyr::filter(pct.1 > 0.5, p_val < 0.001) |>
+      top_n(n = 3, wt = avg_log10FC) |>
+      rownames(),
+    cthpn_cre |> 
+      dplyr::filter(pct.1 > 0.5, p_val < 0.001) |>
+      top_n(n = 3, wt = avg_log10FC) |>
+      rownames(),
+    "Gad1", "Slc32a1", "Slc17a6", "Glul"
+  ),
+  reduction = "ref.umap",
+  split.by = "Scgn_tdTomato",
+  pt.size = 2,
+  alpha_exp = 0.5,
+  repel = TRUE,
+  label = TRUE,
+  label.size = 5,
+  num_columns = 2
+)
+```
+
+It seems from these data that majority of Scgn expressing cells became astrocytes.
 
 # Summary
 
