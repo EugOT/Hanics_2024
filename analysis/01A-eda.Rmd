@@ -2120,6 +2120,7 @@ p1 | p2
 #| label = "plt-tdTomato-vln",
 #| fig.width = 5,
 #| fig.asp = 0.618
+Idents(combined_srt) <- "k_tree"
 VlnPlot_scCustom(seurat_object = combined_srt, assay = "RNA", layer = "counts", features = c("tdTomato"), plot_median = TRUE) & NoLegend()
 ```
 
@@ -2464,18 +2465,18 @@ markers_logreg <-
     test.use = "LR"
   )
 
-# markers_logreg %>%
-#   pull(gene) %>%
-#   gconvert(
-#   .,
-#   organism = "mmusculus",
-#   target = "MGI",
-#   numeric_ns = "",
-#   mthreshold = Inf,
-#   filter_na = TRUE
-# ) %>%
-#   select(name, description) %>%
-#   right_join(markers_logreg, by = c("gene" = "name"))
+markers_logreg %>%
+  pull(gene) %>%
+  gprofiler2::gconvert(
+  .,
+  organism = "mmusculus",
+  target = "MGI",
+  numeric_ns = "",
+  mthreshold = Inf,
+  filter_na = TRUE
+) %>%
+  select(name, description) %>%
+  right_join(markers_logreg, by = c("gene" = "name"))
 
 write_csv(
   markers_logreg,
@@ -2758,18 +2759,18 @@ markers_MAST <-
     test.use = "MAST"
   )
 
-# markers_MAST %>%
-#   pull(gene) %>%
-#   gconvert(
-#   .,
-#   organism = "mmusculus",
-#   target = "MGI",
-#   numeric_ns = "",
-#   mthreshold = Inf,
-#   filter_na = TRUE
-# ) %>%
-#   select(name, description) %>%
-#   right_join(markers_MAST, by = c("gene" = "name"))
+markers_MAST %>%
+  pull(gene) %>%
+  gprofiler2::gconvert(
+  .,
+  organism = "mmusculus",
+  target = "MGI",
+  numeric_ns = "",
+  mthreshold = Inf,
+  filter_na = TRUE
+) %>%
+  select(name, description) %>%
+  right_join(markers_MAST, by = c("gene" = "name"))
 
 write_csv(
   markers_MAST,
