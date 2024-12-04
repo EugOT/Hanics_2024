@@ -1206,7 +1206,7 @@ keep_genes <-
   unique() %>%
   .[!. %in% housekeeping_mouse] %>%
   .[!. %in% sex_genes] %>%
-  .[!. %in% stress_genes]
+  .[!. %in% c(stress_genes, ieg_gene_list$Mus_musculus_IEG)]
 glimpse(keep_genes)
 
 out_of_hvg <- keep_genes[!keep_genes %in% hvg]
@@ -2465,6 +2465,8 @@ markers_logreg <-
     test.use = "LR"
   )
 
+markers_logreg <- markers_logreg[str_detect(pattern = var_regex, string = markers_logreg$gene, negate = TRUE), ]
+
 markers_logreg %>%
   pull(gene) %>%
   gprofiler2::gconvert(
@@ -2476,7 +2478,7 @@ markers_logreg %>%
   filter_na = TRUE
 ) %>%
   select(name, description) %>%
-  right_join(markers_logreg, by = c("gene" = "name"))
+  right_join(markers_logreg, by = c("name" = "gene"))
 
 write_csv(
   markers_logreg,
@@ -2759,6 +2761,8 @@ markers_MAST <-
     test.use = "MAST"
   )
 
+markers_MAST <- markers_MAST[str_detect(pattern = var_regex, string = markers_MAST$gene, negate = TRUE), ]
+
 markers_MAST %>%
   pull(gene) %>%
   gprofiler2::gconvert(
@@ -2770,7 +2774,7 @@ markers_MAST %>%
   filter_na = TRUE
 ) %>%
   select(name, description) %>%
-  right_join(markers_MAST, by = c("gene" = "name"))
+  right_join(markers_MAST, by = c("name" = "gene"))
 
 write_csv(
   markers_MAST,
