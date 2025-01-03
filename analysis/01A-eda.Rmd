@@ -90,7 +90,7 @@ knitr::opts_chunk$set(
   cache.path     = paste0("cache/", docname, "/"),
   cache.comments = FALSE,
   cache.lazy     = FALSE,
-  dev            = c("png", "pdf"),
+  dev            = c("svg"),
   echo           = TRUE,
   error          = FALSE,
   fig.align      = "center",
