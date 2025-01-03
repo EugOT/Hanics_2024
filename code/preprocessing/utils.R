@@ -6,7 +6,6 @@ suppressPackageStartupMessages({
   library(Seurat)
   library(scDEED)
   library(SeuratWrappers)
-  library(SeuratDisk)
   library(sctransform)
   library(glmGamPoi)
   library(clustree)
@@ -475,5 +474,3 @@ derive_k_tree <- function(srt,
   }
   return(list(srt, srt.markers.lr, srt.markers.mast))
 }
-
-

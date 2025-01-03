@@ -100,7 +100,7 @@ knitr::opts_chunk$set(
   warning        = FALSE,
   timeit         = TRUE
 )
-Sys.setenv(RETICULATE_PYTHON = "/opt/python/3.12/bin/python")
+Sys.setenv(RETICULATE_PYTHON = "/opt/conda/bin/python")
 # Load tidyverse infrastructure packages
 suppressPackageStartupMessages({
   library(here)
@@ -118,12 +118,11 @@ suppressPackageStartupMessages({
   library(foreach)
   library(doParallel)
 })
-reticulate::use_condaenv("/opt/python/3.12/bin/python")
+reticulate::use_condaenv("/opt/conda/bin/python")
 
 suppressPackageStartupMessages({
   library(Seurat)
   library(SeuratWrappers)
-  library(SeuratDisk)
   library(sctransform)
   library(glmGamPoi)
   library(clustree)
