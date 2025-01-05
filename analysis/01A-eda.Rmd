@@ -33,7 +33,7 @@ authors:
     email: tibor.harkany@meduniwien.ac.at
 date: "`r Sys.Date()`"
 output:
-  workflowr::wflow_html:
+  workflowr::wflow_html:    
     toc: true
     df-print: paged
     code-fold: true
@@ -2546,7 +2546,7 @@ pl_clst_dotplot <-
 # markers
 Iterate_FeaturePlot_scCustom(
   seurat_object = combined_srt,
-  gene_list = top5_markers,
+  features = top5_markers,
   single_pdf = TRUE,
   colors_use = viridis(
     n = 30,
@@ -2567,7 +2567,7 @@ Iterate_FeaturePlot_scCustom(
 # stress
 Iterate_FeaturePlot_scCustom(
   seurat_object = combined_srt,
-  gene_list = stress_genes,
+  features = stress_genes,
   single_pdf = TRUE,
   colors_use = viridis(
     n = 30,
@@ -2588,7 +2588,7 @@ Iterate_FeaturePlot_scCustom(
 # sex
 Iterate_FeaturePlot_scCustom(
   seurat_object = combined_srt,
-  gene_list = sex_genes,
+  features = sex_genes,
   single_pdf = TRUE,
   colors_use = viridis(
     n = 30,
@@ -2609,7 +2609,7 @@ Iterate_FeaturePlot_scCustom(
 # tf
 Iterate_FeaturePlot_scCustom(
   seurat_object = combined_srt,
-  gene_list = plt_g_tf,
+  features = plt_g_tf,
   single_pdf = TRUE,
   colors_use = viridis(
     n = 30,
@@ -2630,7 +2630,7 @@ Iterate_FeaturePlot_scCustom(
 # glut
 Iterate_FeaturePlot_scCustom(
   seurat_object = combined_srt,
-  gene_list = plt_g_glut,
+  features = plt_g_glut,
   single_pdf = TRUE,
   colors_use = viridis(
     n = 30,
@@ -2651,7 +2651,7 @@ Iterate_FeaturePlot_scCustom(
 # gaba
 Iterate_FeaturePlot_scCustom(
   seurat_object = combined_srt,
-  gene_list = plt_g_gaba,
+  features = plt_g_gaba,
   single_pdf = TRUE,
   colors_use = viridis(
     n = 30,
@@ -2672,7 +2672,7 @@ Iterate_FeaturePlot_scCustom(
 # nmr
 Iterate_FeaturePlot_scCustom(
   seurat_object = combined_srt,
-  gene_list = plt_g_nmr,
+  features = plt_g_nmr,
   single_pdf = TRUE,
   colors_use = viridis(
     n = 30,
@@ -2693,7 +2693,7 @@ Iterate_FeaturePlot_scCustom(
 # np receptors
 Iterate_FeaturePlot_scCustom(
   seurat_object = combined_srt,
-  gene_list = npr,
+  features = npr,
   single_pdf = TRUE,
   colors_use = viridis(
     n = 30,
@@ -2840,7 +2840,7 @@ pl_clst_dotplot <-
 # markers
 Iterate_FeaturePlot_scCustom(
   seurat_object = combined_srt,
-  gene_list = top5_markers,
+  features = top5_markers,
   single_pdf = TRUE,
   colors_use = viridis(
     n = 30,
